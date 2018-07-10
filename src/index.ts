@@ -1,12 +1,30 @@
 import Piece from './Piece';
+import Player from './Player';
 
 const canvas: HTMLCanvasElement = document.getElementById('tetris') as HTMLCanvasElement;
-const context: CanvasRenderingContext2D = canvas.getContext('2d');
+export const context: CanvasRenderingContext2D = canvas.getContext('2d');
 
 context.scale(20, 20);
 
-context.fillStyle = '#000';
-context.fillRect(0, 0, canvas.width, canvas.height);
+const currentPiece = new Piece();
+const player = new Player(currentPiece);
 
-const piece = new Piece();
-piece.draw(context);
+let dropCounter = 0;
+const dropInterval = 1000;
+
+let lastTime = 0;
+const gameLoop = (time: number = 0) => {
+  const deltaTime = time - lastTime;
+  lastTime = time;
+
+  dropCounter += deltaTime;
+  if (dropCounter > dropInterval) {
+    player.position.y++;
+    dropCounter = 0;
+  }
+
+  player.piece.draw(context, player.position);
+  requestAnimationFrame(gameLoop);
+};
+
+gameLoop();
