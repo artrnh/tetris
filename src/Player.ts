@@ -1,3 +1,4 @@
+import { IGame } from './Game';
 import { IPiece } from './Piece';
 
 export interface IPosition {
@@ -6,6 +7,7 @@ export interface IPosition {
 }
 
 export interface IPlayer {
+  game: IGame;
   piece: IPiece;
   position: IPosition;
   dropCounter: number;
@@ -22,15 +24,22 @@ enum keyCodes {
 
 class Player implements IPlayer {
   public dropCounter: number = 0;
+  public game: IGame;
 
   constructor(public piece: IPiece, public position: IPosition) {}
 
   public drop = (): void => {
     this.position.y += 1;
+    console.log(this.piece.collides(this.game.field, this.position));
+    if (this.piece.collides(this.game.field, this.position)) {
+      this.position.y -= 1;
+      this.game.field.merge(this);
+      this.position.y = 0;
+    }
     this.dropCounter = 0;
   }
 
-  public inputController = (e: KeyboardEvent) => {
+  public inputController = (e: KeyboardEvent): void => {
     switch (e.keyCode) {
       case keyCodes.Left:
         this.position.x -= 1;
