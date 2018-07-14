@@ -1,6 +1,5 @@
 import { IGame } from './Game';
 import { IPiece } from './Piece';
-import { Type } from './Piece';
 
 export interface IPosition {
   x: number;
@@ -16,9 +15,7 @@ export interface IPlayer {
 
   drop(): void;
   inputController(e: KeyboardEvent): void;
-  move(direction: number): void;
   reset(): void;
-  rotate(): void;
   updateScore(): void;
 }
 
@@ -49,9 +46,9 @@ class Player implements IPlayer {
 
   public drop = (): void => {
     this.position.y += 1;
-    if (this.game.field.collides(this)) {
+    if (this.game.field.collides(this.piece, this.position)) {
       this.position.y -= 1;
-      this.game.field.merge(this);
+      this.game.field.merge(this.piece, this.position);
       this.reset();
       this.game.field.sweep(this);
       this.updateScore();
@@ -86,32 +83,35 @@ class Player implements IPlayer {
     }
   }
 
-  public move = (direction: Direction): void => {
-    this.position.x += direction;
-    if (this.game.field.collides(this)) this.position.x -= direction;
-  }
-
   public reset = () => {
-    const typesCount = Object.keys(Type).length / 2;
-    const type = Math.floor(typesCount * Math.random());
+    const type = Math.floor(this.piece.typesCount * Math.random());
     this.piece.matrix = this.piece.createMatrix(type);
 
     this.position.y = 0;
     this.position.x = Math.floor(this.game.field.width / 2) - Math.floor(this.piece.matrix.length / 2);
 
-    if (this.game.field.collides(this)) {
+    if (this.game.field.collides(this.piece, this.position)) {
       this.game.field.clear();
       this.score = 0;
       this.updateScore();
     }
   }
 
-  public rotate = (): void => {
+  public updateScore = (): void =>  {
+    document.getElementById('score').innerText = `Score: ${this.score}`;
+  }
+
+  private move = (direction: Direction): void => {
+    this.position.x += direction;
+    if (this.game.field.collides(this.piece, this.position)) this.position.x -= direction;
+  }
+
+  private rotate = (): void => {
     const initialX = this.position.x;
     let offset: number = 1;
     this.piece.rotate(Direction.Right);
 
-    while (this.game.field.collides(this)) {
+    while (this.game.field.collides(this.piece, this.position)) {
       this.position.x += offset;
       offset = -(offset > 0 ? offset + 1 : offset - 1);
 
@@ -121,10 +121,6 @@ class Player implements IPlayer {
         return;
       }
     }
-  }
-
-  public updateScore = (): void =>  {
-    document.getElementById('score').innerText = `Score: ${this.score}`;
   }
 }
 

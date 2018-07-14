@@ -13,4 +13,4 @@ const player: IPlayer = new Player(new Piece());
 const game: IGame = new Game(context, player, field);
 
 document.addEventListener('keydown', player.inputController);
-game.loop();
+game.run();

@@ -6,9 +6,7 @@ export interface IGame {
   player: IPlayer;
   field: IField;
 
-  draw(): void;
-  drawMatrix(matrix: number[][], position: IPosition): void;
-  loop(time?: number): void;
+  run(time?: number): void;
 }
 
 const colors = [
@@ -35,25 +33,7 @@ class Game implements IGame {
     player.updateScore();
   }
 
-  public draw = (): void => {
-    this.context.fillStyle = '#000';
-    this.context.fillRect(0, 0, this.context.canvas.width, this.context.canvas.height);
-    this.drawMatrix(this.field.matrix, { x: 0, y: 0 });
-    this.drawMatrix(this.player.piece.matrix, this.player.position);
-  }
-
-  public drawMatrix = (matrix: number[][], position: IPosition): void => {
-    matrix.forEach((row: number[], y: number) => {
-      row.forEach((cell: number, x: number) => {
-        if (cell) {
-          this.context.fillStyle = colors[cell];
-          this.context.fillRect(x + position.x, y + position.y, 1, 1);
-        }
-      });
-    });
-  }
-
-  public loop = (time: number = 0): void => {
+  public run = (time: number = 0): void => {
     const deltaTime: number = time - this.lastTime;
     this.lastTime = time;
 
@@ -63,7 +43,25 @@ class Game implements IGame {
     }
 
     this.draw();
-    requestAnimationFrame(this.loop);
+    requestAnimationFrame(this.run);
+  }
+
+  private draw = (): void => {
+    this.context.fillStyle = '#000';
+    this.context.fillRect(0, 0, this.context.canvas.width, this.context.canvas.height);
+    this.drawMatrix(this.field.matrix, { x: 0, y: 0 });
+    this.drawMatrix(this.player.piece.matrix, this.player.position);
+  }
+
+  private drawMatrix = (matrix: number[][], position: IPosition): void => {
+    matrix.forEach((row: number[], y: number) => {
+      row.forEach((cell: number, x: number) => {
+        if (cell) {
+          this.context.fillStyle = colors[cell];
+          this.context.fillRect(x + position.x, y + position.y, 1, 1);
+        }
+      });
+    });
   }
 }
 

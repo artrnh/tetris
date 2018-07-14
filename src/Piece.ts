@@ -3,6 +3,7 @@ import { Direction } from './Player';
 export interface IPiece {
   matrix: number[][];
   type: Type;
+  typesCount: number;
 
   createMatrix(type: Type): number[][];
   rotate(direction: Direction): void;
@@ -15,10 +16,12 @@ export enum Type {
 class Piece implements IPiece {
   public type: Type;
   public matrix: number[][];
+  public get typesCount() {
+    return Object.keys(Type).length / 2;
+  }
 
   constructor() {
-    const typesCount = Object.keys(Type).length / 2;
-    this.type = Math.floor(typesCount * Math.random());
+    this.type = Math.floor(this.typesCount * Math.random());
     this.matrix = this.createMatrix(this.type);
   }
 
