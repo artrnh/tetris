@@ -9,7 +9,7 @@ export const context: CanvasRenderingContext2D = canvas.getContext('2d');
 context.scale(20, 20);
 
 const field: IField = new Field(12, 20);
-const player: IPlayer = new Player(new Piece(), { x: 5, y: 5 });
+const player: IPlayer = new Player(new Piece());
 const game: IGame = new Game(context, player, field);
 
 document.addEventListener('keydown', player.inputController);

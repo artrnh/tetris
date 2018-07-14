@@ -31,6 +31,8 @@ class Game implements IGame {
     public field: IField,
   ) {
     player.game = this;
+    player.reset();
+    player.updateScore();
   }
 
   public draw = (): void => {

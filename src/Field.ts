@@ -8,7 +8,7 @@ export interface IField {
   clear(): void;
   collides(player: IPlayer): boolean;
   merge(player: IPlayer): void;
-  sweep(): void;
+  sweep(player: IPlayer): void;
 }
 
 class Field implements IField {
@@ -40,12 +40,17 @@ class Field implements IField {
     });
   }
 
-  public sweep = (): void => {
+  public sweep = (player: IPlayer): void => {
+    let rowCount = 1;
+
     for (let y = this.matrix.length - 1; y > 0; y--) {
       if (this.matrix[y].every((cell: number) => cell !== 0)) {
         const row = this.matrix.splice(y, 1)[0].fill(0);
         this.matrix.unshift(row);
         y += 1;
+
+        player.score += rowCount * 10;
+        rowCount *= 2;
       }
     }
   }
