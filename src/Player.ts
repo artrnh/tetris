@@ -30,8 +30,7 @@ class Player implements IPlayer {
 
   public drop = (): void => {
     this.position.y += 1;
-    console.log(this.piece.collides(this.game.field, this.position));
-    if (this.piece.collides(this.game.field, this.position)) {
+    if (this.game.field.collides(this)) {
       this.position.y -= 1;
       this.game.field.merge(this);
       this.position.y = 0;

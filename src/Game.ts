@@ -26,6 +26,7 @@ class Game implements IGame {
   public draw = (): void => {
     this.context.fillStyle = '#000';
     this.context.fillRect(0, 0, this.context.canvas.width, this.context.canvas.height);
+    this.drawPiece(this.field, { x: 0, y: 0 });
     this.drawPiece(this.player.piece, this.player.position);
   }
 
