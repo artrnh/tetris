@@ -8,7 +8,7 @@ export interface IGame {
   field: IField;
 
   draw(): void;
-  drawPiece(piece: IPiece, position: IPosition): void;
+  drawMatrix(matrix: number[][], position: IPosition): void;
   loop(time?: number): void;
 }
 
@@ -26,12 +26,12 @@ class Game implements IGame {
   public draw = (): void => {
     this.context.fillStyle = '#000';
     this.context.fillRect(0, 0, this.context.canvas.width, this.context.canvas.height);
-    this.drawPiece(this.field, { x: 0, y: 0 });
-    this.drawPiece(this.player.piece, this.player.position);
+    this.drawMatrix(this.field.matrix, { x: 0, y: 0 });
+    this.drawMatrix(this.player.piece.matrix, this.player.position);
   }
 
-  public drawPiece = (piece: IPiece, position: IPosition): void => {
-    piece.matrix.forEach((row: number[], y: number) => {
+  public drawMatrix = (matrix: number[][], position: IPosition): void => {
+    matrix.forEach((row: number[], y: number) => {
       row.forEach((cell: number, x: number) => {
         if (cell) {
           this.context.fillStyle = 'red';

@@ -14,12 +14,25 @@ export interface IPlayer {
 
   drop(): void;
   inputController(e: KeyboardEvent): void;
+  move(direction: number): void;
+  rotate(): void;
 }
 
-enum keyCodes {
+export enum Direction {
+  Left = -1,
+  Right = 1,
+}
+
+export enum KeyCode {
+  Space = 32,
   Left = 37,
-  Right = 39,
-  Down = 40,
+  Up,
+  Right,
+  Down,
+  W = 87,
+  A = 65,
+  S = 83,
+  D = 68,
 }
 
 class Player implements IPlayer {
@@ -40,20 +53,50 @@ class Player implements IPlayer {
 
   public inputController = (e: KeyboardEvent): void => {
     switch (e.keyCode) {
-      case keyCodes.Left:
-        this.position.x -= 1;
+      case KeyCode.Left:
+      case KeyCode.A:
+        this.move(Direction.Left);
         break;
 
-      case keyCodes.Right:
-        this.position.x += 1;
+      case KeyCode.Right:
+      case KeyCode.D:
+        this.move(Direction.Right);
         break;
 
-      case keyCodes.Down:
+      case KeyCode.Down:
+      case KeyCode.S:
         this.drop();
         break;
 
+      case KeyCode.Up:
+      case KeyCode.W:
+      case KeyCode.Space:
+        this.rotate();
+
       default:
         break;
+    }
+  }
+
+  public move = (direction: Direction): void => {
+    this.position.x += direction;
+    if (this.game.field.collides(this)) this.position.x -= direction;
+  }
+
+  public rotate = (): void => {
+    const initialX = this.position.x;
+    let offset: number = 1;
+    this.piece.rotate(Direction.Right);
+
+    while (this.game.field.collides(this)) {
+      this.position.x += offset;
+      offset = -(offset > 0 ? offset + 1 : offset - 1);
+
+      if (offset > this.piece.matrix.length) {
+        this.piece.rotate(Direction.Left);
+        this.position.x = initialX;
+        return;
+      }
     }
   }
 }
