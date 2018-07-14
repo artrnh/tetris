@@ -8,6 +8,7 @@ export interface IField {
   clear(): void;
   collides(player: IPlayer): boolean;
   merge(player: IPlayer): void;
+  sweep(): void;
 }
 
 class Field implements IField {
@@ -37,6 +38,16 @@ class Field implements IField {
         if (cell) this.matrix[y + position.y][x + position.x] = cell;
       });
     });
+  }
+
+  public sweep = (): void => {
+    for (let y = this.matrix.length - 1; y > 0; y--) {
+      if (this.matrix[y].every((cell: number) => cell !== 0)) {
+        const row = this.matrix.splice(y, 1)[0].fill(0);
+        this.matrix.unshift(row);
+        y += 1;
+      }
+    }
   }
 }
 

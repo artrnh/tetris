@@ -49,6 +49,7 @@ class Player implements IPlayer {
       this.position.y -= 1;
       this.game.field.merge(this);
       this.reset();
+      this.game.field.sweep();
     }
     this.dropCounter = 0;
   }
