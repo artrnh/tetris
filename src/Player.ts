@@ -1,5 +1,6 @@
 import { IGame } from './Game';
 import { IPiece } from './Piece';
+import { Type } from './Piece';
 
 export interface IPosition {
   x: number;
@@ -15,15 +16,16 @@ export interface IPlayer {
   drop(): void;
   inputController(e: KeyboardEvent): void;
   move(direction: number): void;
+  reset(): void;
   rotate(): void;
 }
 
-export enum Direction {
+export const enum Direction {
   Left = -1,
   Right = 1,
 }
 
-export enum KeyCode {
+export const enum KeyCode {
   Space = 32,
   Left = 37,
   Up,
@@ -46,7 +48,7 @@ class Player implements IPlayer {
     if (this.game.field.collides(this)) {
       this.position.y -= 1;
       this.game.field.merge(this);
-      this.position.y = 0;
+      this.reset();
     }
     this.dropCounter = 0;
   }
@@ -81,6 +83,17 @@ class Player implements IPlayer {
   public move = (direction: Direction): void => {
     this.position.x += direction;
     if (this.game.field.collides(this)) this.position.x -= direction;
+  }
+
+  public reset = () => {
+    const typesCount = Object.keys(Type).length / 2;
+    const type = Math.floor(typesCount * Math.random());
+    this.piece.matrix = this.piece.createMatrix(type);
+
+    this.position.y = 0;
+    this.position.x = Math.floor(this.game.field.width / 2) - Math.floor(this.piece.matrix.length / 2);
+
+    if (this.game.field.collides(this)) this.game.field.clear();
   }
 
   public rotate = (): void => {

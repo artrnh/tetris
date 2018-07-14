@@ -1,5 +1,4 @@
 import { IField } from './Field';
-import { IPiece } from './Piece';
 import { IPlayer, IPosition } from './Player';
 
 export interface IGame {
@@ -11,6 +10,17 @@ export interface IGame {
   drawMatrix(matrix: number[][], position: IPosition): void;
   loop(time?: number): void;
 }
+
+const colors = [
+  null,
+  '#e69f00',
+  '#56b4e9',
+  '#009e73',
+  '#f0e442',
+  '#0072b2',
+  '#d55e00',
+  '#cc79a7',
+];
 
 class Game implements IGame {
   public static dropInterval: number = 1000;
@@ -34,7 +44,7 @@ class Game implements IGame {
     matrix.forEach((row: number[], y: number) => {
       row.forEach((cell: number, x: number) => {
         if (cell) {
-          this.context.fillStyle = 'red';
+          this.context.fillStyle = colors[cell];
           this.context.fillRect(x + position.x, y + position.y, 1, 1);
         }
       });
